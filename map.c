@@ -1,20 +1,9 @@
-/* NIM: 18221088 */
-/* Nama: Johan Christiansen */
-/* Tanggal: 30 Oktober 2022 */
-/* Topik Praktikum: Pra-Praktikum 8 */
-/* Deskripsi: Mengimplementasikan map.h */
-
 #include <stdio.h>
 #include "map.h"
+#include "wordmachine.h"
+#include "charmachine.h"
 
-/* Definisi Map M kosong : M.Count = Nil */
-/* M.Count = jumlah element Map */
-/* M.Elements = tempat penyimpanan element Map */
-
-/* ********* Prototype ********* */
-
-/* *** Konstruktor/Kreator *** */
-void CreateEmpty(Map *M){
+void CreateEmptyMap(Map *M){
     (*M).Count = Nil;
 }
 /* I.S. Sembarang */
@@ -22,39 +11,50 @@ void CreateEmpty(Map *M){
 /* Ciri Map kosong : count bernilai Nil */
 
 /* ********* Predikat Untuk test keadaan KOLEKSI ********* */
-boolean IsEmpty(Map M){
-    return (M.Count == Nil);
+boolean IsEmptyMap(Map M){
+    return(M.Count == Nil);
 }
 /* Mengirim true jika Map M kosong*/
 /* Ciri Map kosong : count bernilai Nil */
 
-boolean IsFull(Map M){
-    return (M.Count == MaxEl);
+boolean IsFullMap(Map M){
+    return(M.Count == MaxEl);
 }
 /* Mengirim true jika Map M penuh */
 /* Ciri Map penuh : count bernilai MaxEl */
 
 /* ********** Operator Dasar Map ********* */
-valuetype Value(Map M, keytype k){
-    if (IsMember(M,k)){
-        int idx = 0;
-        while (M.Elements[idx].Key != k){
-            idx ++;
+valuetype ValueMap(Map M, keytype k){
+    if(IsMemberMap(M,k)){
+        int i = 0;
+        while(!IsStrEq(M.Elements[i].Key,k)){
+            i++;
         }
-        return M.Elements[idx].Value;
+        return(M.Elements[i].Value);
     }
     else{
-        return Undefined;
+        return(Undefined);
     }
 }
 /* Mengembalikan nilai value dengan key k dari M */
 /* Jika tidak ada key k pada M, akan mengembalikan Undefined */
 
-void Insert(Map *M, keytype k, valuetype v){
-    if (!IsMember(*M,k)){
-        (*M).Elements[(*M).Count].Key = k;
-        (*M).Elements[(*M).Count].Value = v;
-        (*M).Count += 1;
+void InsertMap(Map *M, keytype k, valuetype v){
+    if(IsEmptyMap(*M)){
+        (*M).Elements[0].Key = k;
+        (*M).Elements[0].Value = v;
+        (*M).Count = 1;
+    }
+    else{
+        if(!IsMemberMap((*M),k)){
+            int i = 0;
+            while(i != ((*M).Count)){
+                i++;
+            }
+            (*M).Elements[i].Key = k;
+            (*M).Elements[i].Value = v;
+            (*M).Count++;
+        }
     }
 }
 /* Menambahkan Elmt sebagai elemen Map M. */
@@ -62,17 +62,20 @@ void Insert(Map *M, keytype k, valuetype v){
         M mungkin sudah beranggotakan v dengan key k */
 /* F.S. v menjadi anggota dari M dengan key k. Jika k sudah ada, operasi tidak dilakukan */
 
-void Delete(Map *M, keytype k){
-    if (IsMember(*M,k)){
-        int idx = 0;
-        while ((*M).Elements[idx].Key != k){
-            idx ++;
+void DeleteMap(Map *M, keytype k){
+    if(IsMemberMap((*M),k)){
+        int i = 0;
+        while(i != ((*M).Count-1) && (*M).Elements[i].Key != k){
+            i++;
         }
-        for (idx;idx<(*M).Count-1;idx++){
-            (*M).Elements[idx].Key = (*M).Elements[idx+1].Key;
-            (*M).Elements[idx].Value = (*M).Elements[idx+1].Value;
+        int idxtemp;
+        idxtemp = i;
+        for(idxtemp ; idxtemp <= (*M).Count-1 ; idxtemp++){
+            (*M).Elements[idxtemp] = (*M).Elements[idxtemp+1];
         }
-        (*M).Count -= 1;
+        (*M).Elements[(*M).Count-1].Key = '\0';
+        (*M).Elements[(*M).Count-1].Value = Undefined;
+        (*M).Count--;
     }
 }
 /* Menghapus Elmt dari Map M. */
@@ -80,15 +83,19 @@ void Delete(Map *M, keytype k){
         element dengan key k mungkin anggota / bukan anggota dari M */
 /* F.S. element dengan key k bukan anggota dari M */
 
-boolean IsMember(Map M, keytype k){
-    boolean found = false;
-    int i = 0;
-    while (!found && i<=M.Count-1){
-        if (M.Elements[i].Key == k){
-            found = true;
-        }
-        i ++;
-    }
-    return found;
+boolean IsMemberMap(Map M, keytype k){
+	int i;
+	i = 0;
+	boolean ada;
+	ada = false;
+	while (i < M.Count && ada == false)
+	{
+		if (IsStrEq(M.Elements[i].Key,k))
+		{
+			ada = true;
+		}
+		i++;
+	}
+	return ada;
 }
 /* Mengembalikan true jika k adalah member dari M */
