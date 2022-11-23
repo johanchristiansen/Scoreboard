@@ -29,7 +29,7 @@ Map CopyMap (Map *map){
     return temp;
 }
 
-void SCOREBOARD (Map *mapTOH, Map *mapDinner, Map *mapSnake, Map *mapRNG, Map *mapHangman){
+void SCOREBOARD (Map *mapTOH, Map *mapDinner, Map *mapSnake, Map *mapRNG, Map *mapHangman, Map *mapTambahan){
     // SCOREBOARD GAME TOWER OF HANOI 
     printf("**** SCOREBOARD GAME TOWER OF HANOI ****\n");
     printf("| NAMA\t\t | SKOR \t\t |\n");
@@ -134,9 +134,53 @@ void SCOREBOARD (Map *mapTOH, Map *mapDinner, Map *mapSnake, Map *mapRNG, Map *m
     }
     printf("\n");
 
+
+    // SCOREBOARD GAME TAMBAHAN
+    printf("**** SCOREBOARD GAME TAMBAHAN ****\n");
+    printf("| NAMA\t\t | SKOR \t\t |\n");
+    printf("|----------------------------------------|\n");
+    Map tempTambahan;
+    tempTambahan = CopyMap(mapTambahan);
+    int sumTambahan = mapTambahan->Count;
+    if (sumTambahan>0){
+        for (int i = 0; i<sumTambahan;i++){
+            int idxTambahan;
+            idxTambahan = IMAX(&tempTambahan);
+            printf("| %s\t\t | %d \t\t\t |\n",tempTambahan.Elements[idxTambahan].Key,tempTambahan.Elements[idxTambahan].Value);
+            DeleteMap(&tempTambahan,tempTambahan.Elements[idxTambahan].Key);
+        }
+    }
+    else{
+        printf("---\t     SCOREBOARD KOSONG\t       ---\n");
+    }
+    printf("\n");
+
+
 }
 
 
+char* numToString(int val){
+    if(val==0){
+        return "0";
+    }
+    else{
+         static char buf[32] = {0};
+        int i = 30;
+        for(; val && i ; --i, val /= 10)
+            buf[i] = "0123456789abcdef"[val % 10];
+        return &buf[i+1];
+    }
+}
+
+void SAVESCORE(Map mapGame,FILE * txt){
+    fprintf(txt,"%s\n",intToString(mapGame.Count));
+    Map tempGame = CopyMap(&mapGame);
+    int i=0;
+    for(i;i<mapGame.Count;i++){
+        fprintf(txt,"%s %s\n",tempGame.Elements[IMAX(&tempGame)].Key,intToString(Val(tempGame,tempGame.Elements[IMAX(&tempGame)].Key)));
+        DeleteMap(&tempGame,tempGame.Elements[IMAX(&tempGame)].Key);
+    }
+}
 // int main(){
 //     int skor = 12;
 //     Map coba,dinner,snake,rng,hangman;

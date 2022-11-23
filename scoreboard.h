@@ -10,6 +10,10 @@ int IMAX (Map *map);
 
 Map CopyMap (Map *map);
 
-void SCOREBOARD (Map *mapTOH, Map *mapDinner, Map *mapSnake, Map *mapRNG, Map *mapHangman);
+void SCOREBOARD (Map *mapTOH, Map *mapDinner, Map *mapSnake, Map *mapRNG, Map *mapHangman, Map *mapTambahan);
+
+char* numToString(int val);
+
+void SAVESCORE(Map mapGame,FILE * txt);
 
 #endif
