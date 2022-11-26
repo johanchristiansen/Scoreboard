@@ -6,6 +6,11 @@ void SAVESCOREBOARD (Map *mapGame, int skor){ // ini tapi belum masuk ke file ko
     printf("Nama: ");
     char *nama;
     nama = scaninput();
+    while (IsMemberMap(*mapGame,nama)){
+        printf("Nama sudah terpakai silahkan pilih nama lain\n");
+        printf("Nama: ");
+        nama = scaninput();
+    }
     InsertMap(mapGame,nama,skor);
 }
 
@@ -70,24 +75,11 @@ char* numToString(int val){
     }
 }
 
-void SAVESCORE(Map mapGame,FILE * txt){
-    fprintf(txt,"%s\n",intToString(mapGame.Count));
-    Map tempGame = CopyMap(&mapGame);
-    int i=0;
-    for(i;i<mapGame.Count;i++){
-        fprintf(txt,"%s %s\n",tempGame.Elements[IMAX(&tempGame)].Key,intToString(Val(tempGame,tempGame.Elements[IMAX(&tempGame)].Key)));
-        DeleteMap(&tempGame,tempGame.Elements[IMAX(&tempGame)].Key);
-    }
-}
+
 // int main(){
-//     int skor = 12;
-//     Map coba,dinner,snake,rng,hangman;
+//     Map coba;
 //     CreateEmptyMap(&coba);
-//     CreateEmptyMap(&dinner);
-//     CreateEmptyMap(&snake);
-//     CreateEmptyMap(&rng);
-//     CreateEmptyMap(&hangman);
+//     InsertMap(&coba,"BNMO",12);
+//     int skor = 10;
 //     SAVESCOREBOARD(&coba,skor);
-//     SCOREBOARD(&coba,&dinner,&snake,&rng,&hangman);
-//     return 0;
 // }
